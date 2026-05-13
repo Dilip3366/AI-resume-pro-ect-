@@ -1,4 +1,4 @@
-import PyPDF2
+import pypdf
 import docx
 import os
 import re
