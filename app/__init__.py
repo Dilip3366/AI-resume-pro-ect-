@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__, static_folder='../static')
+    app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static'))
     CORS(app)
 
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret')
@@ -22,8 +22,8 @@ def create_app():
     app.register_blueprint(screen_bp, url_prefix='/api')
     app.register_blueprint(health_bp, url_prefix='/api')
 
+    @app.route('/')
+    def index():
+        return send_from_directory(app.static_folder, 'index.html')
+
     return app
-
-
-# ✅ IMPORTANT FIX FOR DEPLOYMENT
-app = create_app()
