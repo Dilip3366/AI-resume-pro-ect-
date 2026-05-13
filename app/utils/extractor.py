@@ -5,10 +5,9 @@ import re
 
 
 def extract_text_from_pdf(filepath: str) -> str:
-    """Extract raw text from a PDF file."""
     text = []
     with open(filepath, 'rb') as f:
-        reader = PyPDF2.PdfReader(f)
+        reader = pypdf.PdfReader(f)
         for page in reader.pages:
             page_text = page.extract_text()
             if page_text:
@@ -17,14 +16,12 @@ def extract_text_from_pdf(filepath: str) -> str:
 
 
 def extract_text_from_docx(filepath: str) -> str:
-    """Extract raw text from a DOCX file."""
     doc = docx.Document(filepath)
     paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
     return '\n'.join(paragraphs)
 
 
 def extract_text(filepath: str) -> str:
-    """Auto-detect file type and extract text."""
     ext = os.path.splitext(filepath)[1].lower()
     if ext == '.pdf':
         return extract_text_from_pdf(filepath)
@@ -38,9 +35,7 @@ def extract_text(filepath: str) -> str:
 
 
 def clean_text(text: str) -> str:
-    """Normalize whitespace and remove junk characters."""
     text = re.sub(r'\s+', ' ', text)
     text = re.sub(r'[^\x00-\x7F]+', ' ', text)
     text = re.sub(r'[^\w\s@.\-+]', ' ', text)
     return text.strip()
-
